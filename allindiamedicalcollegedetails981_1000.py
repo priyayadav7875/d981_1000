@@ -172,11 +172,14 @@ def scrape_college_info(driver,URLS):
     data["college_info"]["college_name"] = driver.find_element(By.TAG_NAME, "h1").text.strip()
 
     # ================= LOCATION + CITY =================
-    loc = driver.find_element(By.CSS_SELECTOR, "span.f90eb6").text
-    if "," in loc:
-        l, c = loc.split(",", 1)
-        data["college_info"]["location"] = l.strip()
-        data["college_info"]["city"] = c.strip()
+    try:
+        loc = driver.find_element(By.CSS_SELECTOR, "span.f90eb6").text
+        if "," in loc:
+            l, c = loc.split(",", 1)
+            data["college_info"]["location"] = l.strip()
+            data["college_info"]["city"] = c.strip()
+    except:
+        pass
 
     # ================= RATING =================
     try:
@@ -374,12 +377,14 @@ def scrape_college_info(driver,URLS):
 
     for item in data["college_info"]["highlights"]["table"]:
         print(f"  - {item['particular']}: {item['details'][:50]}...")
-
-    wait.until(
-        EC.presence_of_element_located(
-            (By.ID, "ovp_section_popular_courses")
+    try:
+        wait.until(
+            EC.presence_of_element_located(
+                (By.ID, "ovp_section_popular_courses")
+            )
         )
-    )
+    except:
+        pass
 
     # ================= INTRO / SUMMARY =================
     data["intro"] = driver.execute_script("""
